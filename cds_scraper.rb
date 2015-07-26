@@ -17,12 +17,11 @@ max_page = page_numbers.max
 # Initialize Arrays
 name = []
 price = []
-details = []
 
 # Search results
 max_page.to_i.times do |i|
   # Open search results page
-  url = "http://centrodosuplemento.com.br/suplementos?p=#{i+1}"
+  url = "http://centrodosuplemento.com.br/suplementos?mode=list?p=#{i+1}"
   page = Nokogiri::HTML(open(url))
 
   # Store data in Arrays
@@ -33,16 +32,12 @@ max_page.to_i.times do |i|
   page.css('.price-box .price').each do |line|
     price << line.text
   end
-
-  page.css('.products-list .desc').each do |line|
-    details << line.text.strip.split(/ . /)
-  end
 end
 
 CSV.open("cds_list.csv", "w") do |file|
-  file << ["Listing Name", "Price", "Details",]
+  file << ["Listing Name", "Price"]
 
   name.length.times do |i|
-    file << [name[i], price[i], details[i]]
+    file << [name[i], price[i]]
   end
 end
